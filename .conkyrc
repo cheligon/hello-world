@@ -1,0 +1,90 @@
+conky.config = {
+	alignment = 'top_right',
+    background = false,
+    border_width = 1,
+    cpu_avg_samples = 2,
+    default_color = 'white',
+    default_outline_color = 'white',
+    default_shade_color = 'white',
+    double_buffer = true,
+    draw_borders = false,
+    draw_graph_borders = true,
+    draw_outline = false,
+    draw_shades = false,
+    extra_newline = false,
+    font = 'DejaVu Sans Mono:size=10',
+    gap_x = 10,
+    gap_y = 20,
+    minimum_height = 150,
+    minimum_width = 120,
+    maximum_width = 340,
+    net_avg_samples = 2,
+    no_buffers = true,
+    out_to_console = false,
+    out_to_ncurses = false,
+    out_to_stderr = false,
+    out_to_x = true,
+    own_window = true,
+    own_window_class = 'Conky',
+    own_window_type = 'desktop',
+    own_window_transparent = true,
+    own_window_argb_visual = true,
+    show_graph_range = false,
+    show_graph_scale = false,
+    stippled_borders = 0,
+    update_interval = 1.0,
+    uppercase = false,
+    use_spacer = 'none',
+    use_xft = true,
+    short_units = true
+}
+
+conky.text = [[
+$nodename uptime: ${color green}$uptime${color}$alignr${color green}${hwmon 4 temp 1}°C${color}
+$hr
+RAM:$color ${color green}$mem$color/$memmax${goto 170}${color green}${if_match ${memperc} >= 90}${color red}${endif}$memperc%${goto 200}${membar 9}${color}
+$alignc${memgraph 50,340 39FF14 FF2226 -t}
+Swap:$color $swap/$swapmax${goto 170}$swapperc%${goto 200}${if_match ${swapperc} >= 5}${color red}${endif}${swapbar 4}${color}
+$hr
+${alignc}CPUs
+${alignc}${color green} $freq MHz$color
+${cpugraph cpu1 50,50 39FF14 FF2226 -t} ${cpugraph cpu2 50,50 39FF14 FF2226 -t} ${cpugraph cpu3 50,50 39FF14 FF2226 -t} ${cpugraph cpu4 50,50 39FF14 FF2226 -t} ${cpugraph cpu5 50,50 39FF14 FF2226 -t} ${cpugraph cpu6 50,50 39FF14 FF2226 -t}
+${cpugraph cpu7 50,50 39FF14 FF2226 -t} ${cpugraph cpu8 50,50 39FF14 FF2226 -t} ${cpugraph cpu9 50,50 39FF14 FF2226 -t} ${cpugraph cpu10 50,50 39FF14 FF2226 -t} ${cpugraph cpu11 50,50 39FF14 FF2226 -t} ${cpugraph cpu12 50,50 39FF14 FF2226 -t}
+${alignc}${color grey}Processes:$color $processes  ${color grey}Running:$color $running_processes
+$hr
+${alignc}Nvidia ${exec nvidia-smi | grep Quadro | cut -c8-19} - ${nvidia memmax} Mo
+${alignc}Driver: ${exec nvidia-smi | grep Driver | cut -c43-73}
+Temp: ${color green}${if_match ${nvidia temp} >= 80}${color red}${endif}${nvidia gputemp}${color}°C  Freq.: ${color green}${nvidia gpufreq}${color} MHz  Perf: ${color green}${nvidia perflevel}(${nvidia perfmode})${color}
+${nvidiagraph gpuutil 30,160 39FF14 FF2226 -t}${goto 175}${nvidiagraph memutil 30,160 39FF14 FF2226 -t} ${voffset -15}${offset -285}GPU use           GPU Memory use
+$hr
+${alignc}File systems
+/ ${goto 120}${color green}${if_match ${fs_used_perc /} >= 75}${color orange}${endif}${if_match ${fs_used_perc /} >= 90}${color red}${endif}${fs_used /}$color/${fs_size /}${goto 250}${fs_bar 6 /}
+/home ${goto 120}${color green}${if_match ${fs_used_perc /home} >= 75}${color orange}${endif}${if_match ${fs_used_perc /home} >= 90}${color red}${endif}${fs_used /home}$color/${fs_size /home}${goto 250}${fs_bar 6 /home}
+${if_mounted /media/chris/DATA}DATA ${goto 120}${color green}${if_match ${fs_used_perc /media/chris/DATA} >= 75}${color orange}${endif}${if_match ${fs_used_perc /media/chris/DATA} >= 90}${color red}${endif}${fs_used /media/chris/DATA}${color}/${fs_size /media/chris/DATA}${goto 250}${fs_bar /media/chris/DATA}${color}${endif}
+${if_mounted /media/chris/Projects_Space}Projects_Space ${goto 120}${color green}${if_match ${fs_used_perc /media/chris/Projects_Space} >= 70}${color orange}${endif}${if_match ${fs_used_perc /media/chris/Projects_Space} >= 80}${color red}${endif}${fs_used /media/chris/Projects_Space}${color}/${fs_size /media/chris/Projects_Space}${goto 250}${fs_bar /media/chris/Projects_Space}${color}${endif}
+$hr
+${alignc}Networking
+${if_match "${addr eno1}" != "No Address"}Ethernet: ${color green}${addr eno1}${color}
+Download: ${color green}${downspeed eno1}${color}/s ${goto 175}Upload: ${color green}${upspeed eno1}${color}/s
+${downspeedgraph eno1 30,160}${goto 175}${upspeedgraph eno1 30,160}${else}${if_match "${addr wlp111s0}" != "No Address"}Wifi: ${addr wlp111s0}
+SSID : ${wireless_essid wlp111s0}
+Quality: : ${wireless_link_qual_perc wlp111s0}% ${goto 175}${wireless_link_bar wlp111s0 8,140}
+Download: ${color green}${downspeed wlp111s0}${color}/s ${goto 175}Upload: ${color green}${upspeed wlp111s0}${color}/s
+${downspeedgraph wlp111s0 30,160}${goto 175}${upspeedgraph wlp111s0 30,160}${else}${color yellow}No network connection${color}${endif}${endif}
+Total : D - ${color green}${totaldown}${color} ${goto 175}U - ${color green}${totalup}${color}
+$hr
+Users: ${color green}$user_number ${color}${goto 100}ids: ${color green}$user_names ${color}
+$hr
+${color}Name               PID     CPU%   MEM%
+${color lightgrey}${top name 1}${top pid 1}  ${top cpu 1} ${top mem 1}
+${color lightgrey}${top name 2}${top pid 2}  ${top cpu 2} ${top mem 2}
+${color lightgrey}${top name 3}${top pid 3}  ${top cpu 3} ${top mem 3}
+${color lightgrey}${top name 4}${top pid 4}  ${top cpu 4} ${top mem 4}
+${color lightgrey}${top name 5}${top pid 5}  ${top cpu 5} ${top mem 5}
+${color lightgrey}${top name 6}${top pid 6}  ${top cpu 6} ${top mem 6}
+${color lightgrey}${top name 7}${top pid 7}  ${top cpu 7} ${top mem 7}
+#${color lightgrey}${top name 8}${top pid 8}  ${top cpu 8} ${top mem 8}${color}
+${color white}$hr
+${alignc}CeDRE systems
+Critical: ${color green}${if_match ${MUNIN_CRITICAL} != 0}${color red}${endif}${MUNIN_CRITICAL}${color}${goto 110}Warning: ${color green}${if_match ${MUNIN_WARNING} != 0}${color orange}${endif}${MUNIN_WARNING}${color}${goto 220}Unknown: ${color green}${if_match ${MUNIN_UNKNOWN} != 0}${color red}${endif}${MUNIN_UNKNOWN}${color}
+]]
